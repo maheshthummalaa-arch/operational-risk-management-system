@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Log Incident</h2>
+<form method="post" class="card">
+  <label>Title</label><input name="title" required>
+  <label>Description</label><textarea name="description" rows="3"></textarea>
+  <label>Linked risk</label>
+  <select name="risk_id"><option value="">None</option>{% for r in risks %}<option value="{{ r['id'] }}">{{ r["title"] }}</option>{% endfor %}</select>
+  <label>Severity</label>
+  <select name="severity">{% for s in severities %}<option>{{ s }}</option>{% endfor %}</select>
+  <label>Date occurred</label><input type="date" name="occurred_on" value="{{ today }}" required>
+  <label>Loss amount</label><input type="number" step="0.01" min="0" name="loss_amount" value="0">
+  <p><button class="btn">Save</button> <a class="btn gray" href="{{ url_for('incidents_list') }}">Cancel</a></p>
+</form>
+{% endblock %}

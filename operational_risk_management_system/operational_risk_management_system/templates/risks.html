@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row"><h2 style="margin-right:auto">Risk Register</h2>
+  <a class="btn" href="{{ url_for('risk_new') }}">+ Add Risk</a></div>
+<form method="get" class="row card">
+  <label style="margin:0">Category</label>
+  <select name="category" style="width:auto" onchange="this.form.submit()">
+    <option value="">All</option>
+    {% for c in categories %}<option {{ "selected" if c == selected }}>{{ c }}</option>{% endfor %}
+  </select>
+</form>
+<div class="card">
+<table>
+  <tr><th>Title</th><th>Category</th><th>Owner</th><th>L</th><th>I</th><th>Score</th><th>Rating</th><th>Status</th></tr>
+  {% for r in risks %}
+  <tr>
+    <td><a href="{{ url_for('risk_detail', risk_id=r['id']) }}">{{ r["title"] }}</a></td>
+    <td>{{ r["category"] }}</td><td>{{ r["owner"] }}</td>
+    <td>{{ r["likelihood"] }}</td><td>{{ r["impact"] }}</td><td>{{ r["score"] }}</td>
+    <td><span class="badge {{ r['score']|rating }}">{{ r["score"]|rating }}</span></td>
+    <td>{{ r["status"] }}</td>
+  </tr>
+  {% else %}<tr><td colspan="8">No risks found.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

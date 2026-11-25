@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row"><h2 style="margin-right:auto">{{ risk["title"] }}</h2>
+  <a class="btn" href="{{ url_for('risk_edit', risk_id=risk['id']) }}">Edit</a>
+  <form class="inline" method="post" action="{{ url_for('risk_delete', risk_id=risk['id']) }}" onsubmit="return confirm('Delete this risk?')">
+    <button class="btn danger">Delete</button></form></div>
+<div class="card">
+  <p>{{ risk["description"] }}</p>
+  <p><b>Category:</b> {{ risk["category"] }} &nbsp; <b>Owner:</b> {{ risk["owner"] }} &nbsp; <b>Status:</b> {{ risk["status"] }}</p>
+  <p><b>Score:</b> {{ risk["likelihood"] }} &times; {{ risk["impact"] }} = {{ risk["score"] }}
+    <span class="badge {{ risk['score']|rating }}">{{ risk["score"]|rating }}</span></p>
+</div>
+<div class="card">
+  <h3>Controls</h3>
+  <table>
+    {% for c in controls %}
+    <tr><td>{{ c["name"] }}</td><td>{{ c["effectiveness"] }}</td>
+      <td><form class="inline" method="post" action="{{ url_for('control_delete', control_id=c['id']) }}"><button class="btn danger">x</button></form></td></tr>
+    {% else %}<tr><td>No controls recorded.</td></tr>{% endfor %}
+  </table>
+  <form method="post" action="{{ url_for('control_add', risk_id=risk['id']) }}" class="row" style="margin-top:12px">
+    <input name="name" placeholder="New control" required style="flex:2">
+    <select name="effectiveness" style="flex:1">{% for e in effectiveness %}<option {{ "selected" if e=="Medium" }}>{{ e }}</option>{% endfor %}</select>
+    <button class="btn">Add</button>
+  </form>
+</div>
+<div class="card">
+  <h3>Related incidents</h3>
+  <table>
+    {% for i in incidents %}
+    <tr><td>{{ i["occurred_on"] }}</td><td>{{ i["title"] }}</td><td><span class="badge {{ i['severity'] }}">{{ i["severity"] }}</span></td><td>{{ "{:,.0f}".format(i["loss_amount"]) }}</td></tr>
+    {% else %}<tr><td>No incidents.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ "Edit Risk" if risk else "Add Risk" }}</h2>
+<form method="post" class="card">
+  <label>Title</label><input name="title" required value="{{ risk['title'] if risk }}">
+  <label>Description</label><textarea name="description" rows="3">{{ risk['description'] if risk }}</textarea>
+  <label>Category</label>
+  <select name="category">{% for c in categories %}<option {{ "selected" if risk and risk['category']==c }}>{{ c }}</option>{% endfor %}</select>
+  <label>Owner</label><input name="owner" value="{{ risk['owner'] if risk }}">
+  <label>Likelihood (1 = rare, 5 = almost certain)</label>
+  <select name="likelihood">{% for n in range(1,6) %}<option {{ "selected" if risk and risk['likelihood']==n }}>{{ n }}</option>{% endfor %}</select>
+  <label>Impact (1 = minor, 5 = severe)</label>
+  <select name="impact">{% for n in range(1,6) %}<option {{ "selected" if risk and risk['impact']==n }}>{{ n }}</option>{% endfor %}</select>
+  <label>Status</label>
+  <select name="status">{% for s in statuses %}<option {{ "selected" if risk and risk['status']==s }}>{{ s }}</option>{% endfor %}</select>
+  <p><button class="btn">Save</button> <a class="btn gray" href="{{ url_for('risks_list') }}">Cancel</a></p>
+</form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row"><h2 style="margin-right:auto">Incidents</h2>
+  <a class="btn" href="{{ url_for('incident_new') }}">+ Log Incident</a></div>
+<div class="card">
+<table>
+  <tr><th>Date</th><th>Title</th><th>Linked risk</th><th>Severity</th><th>Loss</th></tr>
+  {% for i in incidents %}
+  <tr><td>{{ i["occurred_on"] }}</td><td>{{ i["title"] }}</td><td>{{ i["risk_title"] or "-" }}</td>
+    <td><span class="badge {{ i['severity'] }}">{{ i["severity"] }}</span></td>
+    <td>{{ "{:,.0f}".format(i["loss_amount"] or 0) }}</td></tr>
+  {% else %}<tr><td colspan="5">No incidents logged.</td></tr>{% endfor %}
+</table>
+</div>
+{% endblock %}

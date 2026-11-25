@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Dashboard</h2>
+<div class="grid">
+  <div class="card stat"><div class="n">{{ total_risks }}</div>Total risks</div>
+  <div class="card stat"><div class="n">{{ open_risks }}</div>Not closed</div>
+  <div class="card stat"><div class="n">{{ incidents }}</div>Incidents</div>
+  <div class="card stat"><div class="n">{{ "{:,.0f}".format(total_loss) }}</div>Total loss</div>
+</div>
+
+<div class="grid">
+  {% for level in ["Critical","High","Medium","Low"] %}
+  <div class="card stat"><div class="n">{{ by_rating[level] }}</div><span class="badge {{ level }}">{{ level }}</span></div>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h3>Risk heat map (Likelihood &times; Impact)</h3>
+  <table class="matrix">
+    {% for l in [5,4,3,2,1] %}
+    <tr>
+      <th>L{{ l }}</th>
+      {% for i in [1,2,3,4,5] %}
+        {% set score = l * i %}
+        <td class="m-{{ score|rating }}">{{ matrix.get((l, i), [])|length or "" }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr><th></th>{% for i in [1,2,3,4,5] %}<th>I{{ i }}</th>{% endfor %}</tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Top risks</h3>
+  <table>
+    <tr><th>Risk</th><th>Category</th><th>Score</th><th>Rating</th></tr>
+    {% for r in top %}
+    <tr>
+      <td><a href="{{ url_for('risk_detail', risk_id=r['id']) }}">{{ r["title"] }}</a></td>
+      <td>{{ r["category"] }}</td><td>{{ r["score"] }}</td>
+      <td><span class="badge {{ r['score']|rating }}">{{ r["score"]|rating }}</span></td>
+    </tr>
+    {% else %}<tr><td colspan="4">No risks yet.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}
